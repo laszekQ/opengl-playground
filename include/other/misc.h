@@ -1,0 +1,8 @@
+//
+// Created by laszek on 27.02.2026.
+//
+
+#ifndef OPENGL_PLAYGROUND_MISC_H
+#define OPENGL_PLAYGROUND_MISC_H
+
+#endif //OPENGL_PLAYGROUND_MISC_H
