@@ -1,4 +1,4 @@
-#include "../include/other/Camera.h"
+#include "../../include/other/classes/Camera.h"
 
 Camera::Camera(glm::vec3 pos, glm::vec3 target)
 {
@@ -58,15 +58,23 @@ void Camera::updateDeltaTime(float delta)
 
 void Camera::updatePosition(const bool keys[5])
 {
-    const float speed = 2.5f * deltaTime;
+    float delta = 2.5f * deltaTime;
     if (keys[0]) // W
-        pos += speed * front;
+        pos += delta * front;
     if (keys[1]) // A
-        pos -= glm::normalize(glm::cross(front, up)) * speed;
+        pos -= glm::normalize(glm::cross(front, up)) * delta;
     if (keys[2]) // S
-        pos -= speed * front;
+        pos -= delta * front;
     if (keys[3]) // D
-        pos += glm::normalize(glm::cross(front, up)) * speed;
+        pos += glm::normalize(glm::cross(front, up)) * delta;
+}
+
+void Camera::setSensitivity(float sensitivity) {
+    this->sensitivity = sensitivity;
+}
+
+void Camera::setSpeed(float speed) {
+    this->speed = speed;
 }
 
 glm::mat4 Camera::getView() const

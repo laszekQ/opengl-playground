@@ -11,7 +11,8 @@ class Camera {
             last_y = 300.0f,
             deltaTime = 0.0f;
     bool firstMouse = true;
-    const float sensitivity = 0.1f;
+    float sensitivity = 0.1f;
+    float speed = 2.5f;
 
     public:
     Camera(glm::vec3 pos, glm::vec3 target);
@@ -19,6 +20,8 @@ class Camera {
     void updateRotation(double xpos, double ypos);
     void updateRotation();
     void updatePosition(const bool keys[5]);
+    void setSensitivity(float sensitivity);
+    void setSpeed(float speed);
     [[nodiscard]] glm::mat4 getView() const;
     [[nodiscard]] glm::vec3 getPos() const;
     [[nodiscard]] glm::vec3 getFront() const;

@@ -1,7 +1,7 @@
-#include "../include/other/stb_image.h"
-#include "../include/glad/glad.h"
+#include "../../include/other/stb_image.h"
+#include "../../include/glad/glad.h"
 #include <iostream>
-#include "../include/other/Texture.h"
+#include "../../include/other/classes/Texture.h"
 
 Texture2D::Texture2D(const char* path, int desired_channels)
 {

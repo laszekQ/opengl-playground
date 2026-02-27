@@ -1,10 +1,10 @@
-#include "../include/other/Model.h"
+#include "../../include/other/classes/Model.h"
 
 #include <iostream>
 #include <ostream>
 
-#include "../include/other/ShaderProgram.h"
-#include "../include/other/Texture.h"
+#include "../../include/other/classes/ShaderProgram.h"
+#include "../../include/other/classes/Texture.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>

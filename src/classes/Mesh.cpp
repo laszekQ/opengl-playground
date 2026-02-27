@@ -1,12 +1,9 @@
 #include <format>
 #include <string>
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
 
-#include "../include/other/Mesh.h"
-#include "../include/glad/glad.h"
-#include <GLFW/glfw3.h>
-#include "../include/other/ShaderProgram.h"
+#include "../../include/other/classes/Mesh.h"
+#include "../../include/glad/glad.h"
+#include "../../include/other/classes/ShaderProgram.h"
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures) {
     this->vertices = vertices;

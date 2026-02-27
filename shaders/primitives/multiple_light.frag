@@ -1,9 +1,11 @@
-#version 330 core
+#version 460 core
 
 in vec2 tex_coords;
 in vec3 normal;
 in vec3 frag_pos;
+
 out vec4 FragColor;
+
 uniform vec3 view_pos;
 
 struct Material{
@@ -53,7 +55,7 @@ struct PointLight {
     vec3 specular;
 };
 
-#define NR_POINT_LIGHTS 4
+#define NR_POINT_LIGHTS 0
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 frag_pos, vec3 view_dir)

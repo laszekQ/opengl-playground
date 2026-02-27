@@ -1,9 +1,7 @@
-#include "../include/other/ShaderProgram.h"
+#include "../../include/other/classes/ShaderProgram.h"
 #include <fstream>
 #include <iostream>
-#include "../include/glad/glad.h"
-#include <GLFW/glfw3.h>
-#include <fstream>
+#include "../../include/glad/glad.h"
 #include <sstream>
 #include <string>
 
