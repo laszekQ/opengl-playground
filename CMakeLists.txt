@@ -19,7 +19,9 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 
-add_executable(opengl_playground ${SOURCES})
+add_executable(opengl_playground ${SOURCES}
+        include/other/classes/Object.h
+        src/classes/Object.cpp)
 
 target_link_libraries(opengl_playground OpenGL::GL)
 target_link_libraries(opengl_playground glfw)

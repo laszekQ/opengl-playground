@@ -15,6 +15,10 @@
 /// classes
 #include "../include/other/classes/Camera.h"
 #include "../include/other/classes/Model.h"
+#include "../include/other/classes/Object.h"
+
+/// misc
+#include "../include/other/misc.h"
 
 constexpr unsigned int WINDOW_WIDTH = 800;
 constexpr unsigned int WINDOW_HEIGHT = 600;
@@ -100,9 +104,11 @@ int main() {
     auto view = cam.getView();
     auto projection = glm::perspective(glm::radians(FOV), 1.f * WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100.0f);
 
-    Model backpack("models/backpack/backpack.obj");
+    //Model backpack("models/backpack/backpack.obj");
 
-    ShaderProgram shader("shaders/model/model.vert", "shaders/model/model.frag");
+    auto shader = std::make_shared<ShaderProgram>("shaders/model/model.vert", "shaders/model/model.frag");
+
+    Object backpack(std::make_shared<Model>("models/backpack/backpack.obj"), shader);
 
     while(!glfwWindowShouldClose(window)) {
         /// INPUT
@@ -131,34 +137,66 @@ int main() {
         ImGui::InputFloat("Sensitivity", &cameraSensitivity);
         ImGui::InputFloat("Speed", &cameraSpeed);
         ImGui::SliderFloat("FOV", &FOV, 0.0f, 360.0f, "%.2f");
+
+        // directional light
+        ImGui::Text("DirLight (%.2f, %.2f, %.2f)", dirLightPos[0], dirLightPos[1], dirLightPos[2]);
+        ImGui::ColorEdit3("Ambient", dirLightAmb);
+        ImGui::ColorEdit3("Diffuse", dirLightDiff);
+        ImGui::ColorEdit3("Specular", dirLightSpec);
+
+        /* objects
+        const char* objects[] = { "Iron Sword", "Wooden Shield", "Health Potion", "Dragon Scale" };
+        static int selected_item = 0; // Remembers the chosen index, starting at 0
+
+        if (ImGui::BeginListBox("Object List"))
+        {
+            for (int n = 0; n < IM_ARRAYSIZE(objects); n++)
+            {
+                const bool isSelected = (selected_item == n);
+
+                if (ImGui::Selectable(objects[n], isSelected))
+                    selected_item = n; // Update the memory if clicked!
+
+                // 3. Keep the selected item in view if the box first opens
+                if (isSelected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            // 4. Close the box! Never forget this, lest ImGui crashes in despair.
+            ImGui::EndListBox();
+        }
+        */
+        
         // widgets...
 
         cam.setSensitivity(cameraSensitivity);
         cam.setSpeed(cameraSpeed);
 
         // SHADERS
-        shader.use();
+        shader->use();
 
         /// RENDERING
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+        //model = glm::mat4(1.0f);
+        //model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+        //model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
         view = cam.getView();
 
-
         /// SHADER UNIFORMS
-        shader.setUniformM4("model", model);
-        shader.setUniformM4("view", view);
-        shader.setUniformM4("projection", projection);
+        //shader.setUniformM4("model", model);
+        shader->setUniformM4("view", view);
+        shader->setUniformM4("projection", projection);
 
-        shader.setUniformV3("dirLight.direction", glm::vec3(0.0f, -1.0f, -1.0f));
-        shader.setUniformV3("dirLight.ambient", glm::vec3(0.25f, 0.25f, 0.25f));
-        shader.setUniformV3("dirLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-        shader.setUniformV3("dirLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader->setUniformV3("dirLight.direction", glm::vec3(dirLightPos[0], dirLightPos[1], dirLightPos[2]));
+        shader->setUniformV3("dirLight.ambient", glm::vec3(dirLightAmb[0], dirLightAmb[1], dirLightAmb[2]));
+        shader->setUniformV3("dirLight.diffuse", glm::vec3(dirLightDiff[0], dirLightDiff[1], dirLightDiff[2]));
+        shader->setUniformV3("dirLight.specular", glm::vec3(dirLightSpec[0], dirLightSpec[1], dirLightSpec[2]));
+
+        shader->setUniformV3("viewPos", cam.getPos());
+
+        shader->setUniformf("material.shininess", 1.0f);
 
         /// DRAW CALLS
 
-        backpack.Draw(shader);
+        backpack.render();
 
         /// RENDER
 
