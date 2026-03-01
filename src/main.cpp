@@ -20,8 +20,8 @@
 /// misc
 #include "../include/other/misc.h"
 
-constexpr unsigned int WINDOW_WIDTH = 800;
-constexpr unsigned int WINDOW_HEIGHT = 600;
+constexpr unsigned int WINDOW_WIDTH = 1280;
+constexpr unsigned int WINDOW_HEIGHT = 720;
 
 void processInput(GLFWwindow* window, Camera &camera);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -108,7 +108,9 @@ int main() {
 
     auto shader = std::make_shared<ShaderProgram>("shaders/model/model.vert", "shaders/model/model.frag");
 
-    Object backpack(std::make_shared<Model>("models/backpack/backpack.obj"), shader);
+    std::vector<std::shared_ptr<Object>> objects;
+    objects.push_back(std::make_shared<Object>(std::make_shared<Model>("models/backpack/backpack.obj"), shader));
+    objects.push_back(std::make_shared<Object>(std::make_shared<Model>("models/backpack/backpack.obj"), shader));
 
     while(!glfwWindowShouldClose(window)) {
         /// INPUT
@@ -132,39 +134,113 @@ int main() {
         ImGui::NewFrame();
 
         // camera
+        ImGui::BeginChild("Camera", ImVec2(220, 130), true);
         ImGui::Text("Camera (%.2f, %.2f, %.2f)", cam.getPos().x, cam.getPos().y, cam.getPos().z);
         ImGui::Checkbox("Camera Input", &cameraInput);
-        ImGui::InputFloat("Sensitivity", &cameraSensitivity);
+        ImGui::InputFloat("Sens.", &cameraSensitivity);
         ImGui::InputFloat("Speed", &cameraSpeed);
         ImGui::SliderFloat("FOV", &FOV, 0.0f, 360.0f, "%.2f");
+        ImGui::EndChild();
 
         // directional light
+        ImGui::BeginChild("Directional light", ImVec2(220, 100), true);
         ImGui::Text("DirLight (%.2f, %.2f, %.2f)", dirLightPos[0], dirLightPos[1], dirLightPos[2]);
         ImGui::ColorEdit3("Ambient", dirLightAmb);
         ImGui::ColorEdit3("Diffuse", dirLightDiff);
         ImGui::ColorEdit3("Specular", dirLightSpec);
+        ImGui::EndChild();
 
-        /* objects
-        const char* objects[] = { "Iron Sword", "Wooden Shield", "Health Potion", "Dragon Scale" };
-        static int selected_item = 0; // Remembers the chosen index, starting at 0
+        // object list
+        const char* objNames[] = { "Backpack" , "Backpack1"};
+        static int selectedItem = 0;
 
-        if (ImGui::BeginListBox("Object List"))
+        ImGui::BeginChild("Object List", ImVec2(220, 100), true);
+        if (ImGui::BeginListBox("Objects", ImVec2(130, 150)))
         {
-            for (int n = 0; n < IM_ARRAYSIZE(objects); n++)
+            for (int n = 0; n < IM_ARRAYSIZE(objNames); n++)
             {
-                const bool isSelected = (selected_item == n);
+                const bool isSelected = (selectedItem == n);
 
-                if (ImGui::Selectable(objects[n], isSelected))
-                    selected_item = n; // Update the memory if clicked!
+                if (ImGui::Selectable(objNames[n], isSelected))
+                    selectedItem = n;
 
-                // 3. Keep the selected item in view if the box first opens
                 if (isSelected)
                     ImGui::SetItemDefaultFocus();
             }
-            // 4. Close the box! Never forget this, lest ImGui crashes in despair.
             ImGui::EndListBox();
         }
-        */
+        ImGui::EndChild();
+
+        std::shared_ptr<Object> selectedObj = objects[selectedItem];
+
+        // object inspector (single)
+        ImGui::BeginChild("Object inspector", ImVec2(220, 100), true);
+        ImGui::Text("Object %i (%.2f, %.2f, %.2f)", selectedObj->getId(),
+                                                        selectedObj->getPosition().x,
+                                                        selectedObj->getPosition().y,
+                                                        selectedObj->getPosition().z);
+        ImGui::Text("Rotation (%.2f, %.2f, %.2f)",  selectedObj->getRotation().x,
+                                                        selectedObj->getRotation().y,
+                                                        selectedObj->getRotation().z);
+
+        // translation
+        if (ImGui::Button("Mv 1R", ImVec2(100, 20)))
+            selectedObj->translate(1.0f, 0.0f, 0.0f);
+        ImGui::SameLine(); // make them appear in one row
+        if (ImGui::Button("Mv 1L", ImVec2(100, 20)))
+            selectedObj->translate(-1.0f, 0.0f, 0.0f);
+
+        if (ImGui::Button("Mv 1U", ImVec2(100, 20)))
+            selectedObj->translate(0.0f, 1.0f, 0.0f);
+        ImGui::SameLine();
+        if (ImGui::Button("Mv 1D", ImVec2(100, 20)))
+            selectedObj->translate(0.0f, -1.0f, 0.0f);
+
+        if (ImGui::Button("Mv 1F", ImVec2(100, 20)))
+            selectedObj->translate(0.0f, 0.0f, 1.0f);
+        ImGui::SameLine();
+        if (ImGui::Button("Mv 1B", ImVec2(100, 20)))
+            selectedObj->translate(0.0f, 0.0f, -1.0f);
+
+        // rotation
+        if (ImGui::Button("Rt 5dX", ImVec2(100, 20)))
+            selectedObj->rotate(5.0f, 1.0f, 0.0f, 0.0f);
+        ImGui::SameLine();
+        if (ImGui::Button("Rt -5dX", ImVec2(100, 20)))
+            selectedObj->rotate(-5.0f, 1.0f, 0.0f, 0.0f);
+
+        if (ImGui::Button("Rt 5dY", ImVec2(100, 20)))
+            selectedObj->rotate(5.0f, 0.0f, 1.0f, 0.0f);
+        ImGui::SameLine();
+        if (ImGui::Button("Rt -5dY", ImVec2(100, 20)))
+            selectedObj->rotate(-5.0f, 0.0f, 1.0f, 0.0f);
+
+        if (ImGui::Button("Rt 5dZ", ImVec2(100, 20)))
+            selectedObj->rotate(5.0f, 0.0f, 0.0f, 1.0f);
+        ImGui::SameLine();
+        if (ImGui::Button("Rt -5dZ", ImVec2(100, 20)))
+            selectedObj->rotate(-5.0f, 0.0f, 0.0f, 1.0f);
+
+        // scaling
+        if (ImGui::Button("Sc 5%X", ImVec2(100, 20)))
+            selectedObj->scale(1.05f, 1.0f, 1.0f);
+        ImGui::SameLine();
+        if (ImGui::Button("Sc -5%X", ImVec2(100, 20)))
+            selectedObj->scale(0.95f, 1.0f, 1.0f);
+
+        if (ImGui::Button("Sc 5%Y", ImVec2(100, 20)))
+            selectedObj->scale(1.0f, 1.05f, 1.0f);
+        ImGui::SameLine();
+        if (ImGui::Button("Sc -5%Y", ImVec2(100, 20)))
+            selectedObj->scale(1.0f, 0.95f, 1.0f);
+
+        if (ImGui::Button("Sc 5%Z", ImVec2(100, 20)))
+            selectedObj->scale(1.0f, 1.0f, 1.05f);
+        ImGui::SameLine();
+        if (ImGui::Button("Sc -5%Z", ImVec2(100, 20)))
+            selectedObj->scale(1.0f, 1.0f, 0.95f);
+
+        ImGui::EndChild();
 
         // widgets...
 
@@ -196,7 +272,9 @@ int main() {
 
         /// DRAW CALLS
 
-        backpack.render();
+        for (const auto obj: objects) {
+            obj->render();
+        }
 
         /// RENDER
 

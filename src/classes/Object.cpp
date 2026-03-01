@@ -43,14 +43,30 @@ void Object::setShader(const char *vertShader, const char *fragShader) {
     this->shader = std::make_shared<ShaderProgram>(vertShader, fragShader);
 }
 
+glm::vec3 Object::getPosition() const {
+    glm::vec3 pos(translationMatrix[3][0],
+                  translationMatrix[3][1],
+                  translationMatrix[3][2]);
+    return pos;
+}
+
+glm::vec3 Object::getRotation() const { // TODO: figure out why the values appear halved
+    glm::quat quaternionRotation = glm::quat_cast(rotationMatrix);
+    glm::vec3 rot(glm::degrees(quaternionRotation.x),
+                    glm::degrees(quaternionRotation.y),
+                    glm::degrees(quaternionRotation.z));
+    return rot;
+}
+
 void Object::translate(float x, float y, float z) {
-    this->translationMatrix = glm::translate(iMatrix, glm::vec3(x, y, z));
+    this->translationMatrix = glm::translate(translationMatrix, glm::vec3(x, y, z));
 }
 
 void Object::rotate(float angle, float x, float y, float z) {
-    this->rotationMatrix = glm::rotate(iMatrix, angle, glm::vec3(x, y, z));
+    float radians = glm::radians(angle);
+    this->rotationMatrix = glm::rotate(rotationMatrix, radians, glm::vec3(x, y, z));
 }
 
 void Object::scale(float x, float y, float z) {
-    this->scaleMatrix = glm::scale(iMatrix, glm::vec3(x, y, z));
+    this->scaleMatrix = glm::scale(scaleMatrix, glm::vec3(x, y, z));
 }
