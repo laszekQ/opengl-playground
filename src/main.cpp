@@ -165,7 +165,7 @@ int main() {
             ImGui::EndListBox();
         }
         */
-        
+
         // widgets...
 
         cam.setSensitivity(cameraSensitivity);
