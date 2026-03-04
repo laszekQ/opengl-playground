@@ -15,6 +15,9 @@ class Object {
     glm::mat4 translationMatrix{glm::mat4(1.0f)};
     glm::mat4 rotationMatrix{glm::mat4(1.0f)};
     glm::mat4 scaleMatrix{glm::mat4(1.0f)};
+
+    glm::mat4 iMatrix{glm::mat4(1.0f)};
+
 public:
     Object(const std::shared_ptr<Model> &model, const std::shared_ptr<ShaderProgram> &shader);
     Object(const char* model, const char* vertShader, const char* fragShader);
@@ -34,6 +37,10 @@ public:
     void translate(float x, float y, float z);
     void rotate(float angle, float x, float y, float z);
     void scale(float x, float y, float z);
+
+    void setPosition(float x, float y, float z);
+    void setRotation(float angleX, float angleY, float Z);
+    void setSize(float x, float y, float z);
 };
 
 #endif //OPENGL_PLAYGROUND_OBJECT_H

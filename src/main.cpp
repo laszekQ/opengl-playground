@@ -22,6 +22,7 @@
 
 constexpr unsigned int WINDOW_WIDTH = 1280;
 constexpr unsigned int WINDOW_HEIGHT = 720;
+constexpr unsigned int DEBUG_WIN_WIDTH = 300;
 
 void processInput(GLFWwindow* window, Camera &camera);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -33,6 +34,10 @@ float FOV = 50;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 float currentFrame;
+
+float pos[3] = {0, 0, 0};
+float rot[3] = {0, 0, 0};
+float siz[3] = {1.0f, 1.0f, 1.0f};
 
 Camera cam(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
@@ -134,7 +139,7 @@ int main() {
         ImGui::NewFrame();
 
         // camera
-        ImGui::BeginChild("Camera", ImVec2(220, 130), true);
+        ImGui::BeginChild("Camera", ImVec2(DEBUG_WIN_WIDTH, 130), true);
         ImGui::Text("Camera (%.2f, %.2f, %.2f)", cam.getPos().x, cam.getPos().y, cam.getPos().z);
         ImGui::Checkbox("Camera Input", &cameraInput);
         ImGui::InputFloat("Sens.", &cameraSensitivity);
@@ -143,7 +148,7 @@ int main() {
         ImGui::EndChild();
 
         // directional light
-        ImGui::BeginChild("Directional light", ImVec2(220, 100), true);
+        ImGui::BeginChild("Directional light", ImVec2(DEBUG_WIN_WIDTH, 100), true);
         ImGui::Text("DirLight (%.2f, %.2f, %.2f)", dirLightPos[0], dirLightPos[1], dirLightPos[2]);
         ImGui::ColorEdit3("Ambient", dirLightAmb);
         ImGui::ColorEdit3("Diffuse", dirLightDiff);
@@ -154,8 +159,8 @@ int main() {
         const char* objNames[] = { "Backpack" , "Backpack1"};
         static int selectedItem = 0;
 
-        ImGui::BeginChild("Object List", ImVec2(220, 100), true);
-        if (ImGui::BeginListBox("Objects", ImVec2(130, 150)))
+        ImGui::BeginChild("Object List", ImVec2(DEBUG_WIN_WIDTH, 100), true);
+        if (ImGui::BeginListBox("Objects", ImVec2(DEBUG_WIN_WIDTH / 1.5, 150)))
         {
             for (int n = 0; n < IM_ARRAYSIZE(objNames); n++)
             {
@@ -183,64 +188,14 @@ int main() {
                                                         selectedObj->getRotation().y,
                                                         selectedObj->getRotation().z);
 
-        // translation
-        if (ImGui::Button("Mv 1R", ImVec2(100, 20)))
-            selectedObj->translate(1.0f, 0.0f, 0.0f);
-        ImGui::SameLine(); // make them appear in one row
-        if (ImGui::Button("Mv 1L", ImVec2(100, 20)))
-            selectedObj->translate(-1.0f, 0.0f, 0.0f);
-
-        if (ImGui::Button("Mv 1U", ImVec2(100, 20)))
-            selectedObj->translate(0.0f, 1.0f, 0.0f);
-        ImGui::SameLine();
-        if (ImGui::Button("Mv 1D", ImVec2(100, 20)))
-            selectedObj->translate(0.0f, -1.0f, 0.0f);
-
-        if (ImGui::Button("Mv 1F", ImVec2(100, 20)))
-            selectedObj->translate(0.0f, 0.0f, 1.0f);
-        ImGui::SameLine();
-        if (ImGui::Button("Mv 1B", ImVec2(100, 20)))
-            selectedObj->translate(0.0f, 0.0f, -1.0f);
-
-        // rotation
-        if (ImGui::Button("Rt 5dX", ImVec2(100, 20)))
-            selectedObj->rotate(5.0f, 1.0f, 0.0f, 0.0f);
-        ImGui::SameLine();
-        if (ImGui::Button("Rt -5dX", ImVec2(100, 20)))
-            selectedObj->rotate(-5.0f, 1.0f, 0.0f, 0.0f);
-
-        if (ImGui::Button("Rt 5dY", ImVec2(100, 20)))
-            selectedObj->rotate(5.0f, 0.0f, 1.0f, 0.0f);
-        ImGui::SameLine();
-        if (ImGui::Button("Rt -5dY", ImVec2(100, 20)))
-            selectedObj->rotate(-5.0f, 0.0f, 1.0f, 0.0f);
-
-        if (ImGui::Button("Rt 5dZ", ImVec2(100, 20)))
-            selectedObj->rotate(5.0f, 0.0f, 0.0f, 1.0f);
-        ImGui::SameLine();
-        if (ImGui::Button("Rt -5dZ", ImVec2(100, 20)))
-            selectedObj->rotate(-5.0f, 0.0f, 0.0f, 1.0f);
-
-        // scaling
-        if (ImGui::Button("Sc 5%X", ImVec2(100, 20)))
-            selectedObj->scale(1.05f, 1.0f, 1.0f);
-        ImGui::SameLine();
-        if (ImGui::Button("Sc -5%X", ImVec2(100, 20)))
-            selectedObj->scale(0.95f, 1.0f, 1.0f);
-
-        if (ImGui::Button("Sc 5%Y", ImVec2(100, 20)))
-            selectedObj->scale(1.0f, 1.05f, 1.0f);
-        ImGui::SameLine();
-        if (ImGui::Button("Sc -5%Y", ImVec2(100, 20)))
-            selectedObj->scale(1.0f, 0.95f, 1.0f);
-
-        if (ImGui::Button("Sc 5%Z", ImVec2(100, 20)))
-            selectedObj->scale(1.0f, 1.0f, 1.05f);
-        ImGui::SameLine();
-        if (ImGui::Button("Sc -5%Z", ImVec2(100, 20)))
-            selectedObj->scale(1.0f, 1.0f, 0.95f);
-
+        ImGui::SliderFloat3("Position", pos, -10.0f, 10.0f, "%.2f", true);
+        ImGui::SliderFloat3("Rotation", rot, -180.0f, 180.0f, "%.2f", true);
+        ImGui::SliderFloat3("Size", siz, -10.0f, 10.0f, "%.2f", true);
         ImGui::EndChild();
+
+        selectedObj->setPosition(pos[0], pos[1], pos[2]);
+        selectedObj->setRotation(rot[0], rot[1], rot[2]);
+        selectedObj->setSize(siz[0], siz[1], siz[2]);
 
         // widgets...
 

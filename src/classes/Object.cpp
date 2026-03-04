@@ -63,10 +63,27 @@ void Object::translate(float x, float y, float z) {
 }
 
 void Object::rotate(float angle, float x, float y, float z) {
-    float radians = glm::radians(angle);
-    this->rotationMatrix = glm::rotate(rotationMatrix, radians, glm::vec3(x, y, z));
+    this->rotationMatrix = glm::rotate(rotationMatrix, glm::radians(angle), glm::vec3(x, y, z));
 }
 
 void Object::scale(float x, float y, float z) {
     this->scaleMatrix = glm::scale(scaleMatrix, glm::vec3(x, y, z));
 }
+
+void Object::setPosition(float x, float y, float z)
+{
+    translationMatrix = glm::translate(iMatrix, glm::vec3(x, y, z));
+}
+
+void Object::setRotation(float angleX, float angleY, float angleZ)
+{
+    rotationMatrix = glm::rotate(iMatrix, glm::radians(angleX), glm::vec3(1.0f, 0.0f, 0.0f));
+    rotationMatrix = glm::rotate(rotationMatrix, glm::radians(angleY), glm::vec3(0.0f, 1.0f, 0.0f));
+    rotationMatrix = glm::rotate(rotationMatrix, glm::radians(angleZ), glm::vec3(0.0f, 0.0f, 1.0f));
+}
+
+void Object::setSize(float x, float y, float z)
+{
+    scaleMatrix = glm::scale(scaleMatrix, glm::vec3(x, y, z));
+}
+
