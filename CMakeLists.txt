@@ -21,7 +21,8 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_executable(opengl_playground ${SOURCES}
         include/other/classes/Object.h
-        src/classes/Object.cpp)
+        src/classes/Object.cpp
+        include/other/classes/LightObject.h)
 
 target_link_libraries(opengl_playground OpenGL::GL)
 target_link_libraries(opengl_playground glfw)
