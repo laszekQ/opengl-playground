@@ -30,6 +30,7 @@ bool cameraInput = false;
 float cameraSensitivity = 0.1f;
 float cameraSpeed = 2.5f;
 float FOV = 50;
+bool depthTesting = false;
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
@@ -145,6 +146,8 @@ int main() {
         ImGui::InputFloat("Sens.", &cameraSensitivity);
         ImGui::InputFloat("Speed", &cameraSpeed);
         ImGui::SliderFloat("FOV", &FOV, 0.0f, 360.0f, "%.2f");
+        if (ImGui::Checkbox("Depth testing", &depthTesting))
+            shader->setUniformi("depthTesting", depthTesting);
         ImGui::EndChild();
 
         // directional light

@@ -46,8 +46,22 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 
 uniform DirLight dirLight;
 
+uniform bool depthTesting;
+float near = 0.1;
+float far = 100.0;
+
 void main()
 {
+    if(depthTesting)
+    {
+        // depth linearization
+        float depth = gl_FragCoord.z;
+        float z = depth * 2.0 - 1.0;
+        vec3 result = vec3((2.0 * near * far) / (far + near - z * (far - near)));
+        FragColor = vec4(result, 1.0f);
+        return;
+    }
+
     vec3 viewDir = normalize(viewPos - fragPos);
     vec3 result = CalcDirLight(dirLight, Normal, viewDir);
     //FragColor = texture(texture_diffuse1, TexCoords);
