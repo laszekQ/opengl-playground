@@ -1,5 +1,8 @@
 #include "../../include/other/classes/Object.h"
 
+#include <iostream>
+#include <ostream>
+
 int Object::objCount = 0;
 
 Object::Object(const std::shared_ptr<Model> &model, const std::shared_ptr<ShaderProgram> &shader) {
@@ -56,6 +59,14 @@ glm::vec3 Object::getRotation() const { // TODO: figure out why the values appea
                     glm::degrees(quaternionRotation.y),
                     glm::degrees(quaternionRotation.z));
     return rot;
+}
+
+glm::vec3 Object::getScale() const
+{
+    glm::vec3 siz = glm::vec3(scaleMatrix[0][0],
+                  scaleMatrix[1][1],
+                  scaleMatrix[2][2]);
+    return siz;
 }
 
 void Object::translate(float x, float y, float z) {

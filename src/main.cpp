@@ -170,7 +170,21 @@ int main() {
                 const bool isSelected = (selectedItem == n);
 
                 if (ImGui::Selectable(objNames[n], isSelected))
+                {
                     selectedItem = n;
+                    const std::shared_ptr<Object>& selectedObj = objects[selectedItem];
+                    pos[0] = selectedObj->getPosition().x;
+                    pos[1] = selectedObj->getPosition().y;
+                    pos[2] = selectedObj->getPosition().z;
+
+                    rot[0] = selectedObj->getRotation().x;
+                    rot[1] = selectedObj->getRotation().y;
+                    rot[2] = selectedObj->getRotation().z;
+
+                    siz[0] = selectedObj->getScale().x;
+                    siz[1] = selectedObj->getScale().y;
+                    siz[2] = selectedObj->getScale().z;
+                }
 
                 if (isSelected)
                     ImGui::SetItemDefaultFocus();
@@ -190,10 +204,13 @@ int main() {
         ImGui::Text("Rotation (%.2f, %.2f, %.2f)",  selectedObj->getRotation().x,
                                                         selectedObj->getRotation().y,
                                                         selectedObj->getRotation().z);
+        ImGui::Text("Scale (%.2f, %.2f, %.2f)",  selectedObj->getScale().x,
+                                                        selectedObj->getScale().y,
+                                                        selectedObj->getScale().z);
 
         ImGui::SliderFloat3("Position", pos, -10.0f, 10.0f, "%.2f", true);
         ImGui::SliderFloat3("Rotation", rot, -180.0f, 180.0f, "%.2f", true);
-        ImGui::SliderFloat3("Size", siz, -10.0f, 10.0f, "%.2f", true);
+        ImGui::SliderFloat3("Scale", siz, -10.0f, 10.0f, "%.2f", true);
         ImGui::EndChild();
 
         selectedObj->setPosition(pos[0], pos[1], pos[2]);
