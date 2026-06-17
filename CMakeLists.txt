@@ -22,7 +22,9 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_executable(opengl_playground ${SOURCES}
         include/other/classes/Object.h
         src/classes/Object.cpp
-        include/other/classes/LightObject.h)
+        include/other/classes/LightObject.h
+        include/other/classes/Keyboard.h
+        src/classes/Keyboard.cpp)
 
 target_link_libraries(opengl_playground OpenGL::GL)
 target_link_libraries(opengl_playground glfw)

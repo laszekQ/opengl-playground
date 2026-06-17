@@ -16,6 +16,7 @@
 #include "../include/other/classes/Camera.h"
 #include "../include/other/classes/Model.h"
 #include "../include/other/classes/Object.h"
+#include "../include/other/classes/Keyboard.h"
 
 /// misc
 #include "../include/other/misc.h"
@@ -82,6 +83,8 @@ int main() {
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
     stbi_set_flip_vertically_on_load(true);
+
+    Keyboard::KeyboardInit();
 
     /// IMGUI
     // Setup Dear ImGui context
@@ -270,16 +273,18 @@ int main() {
 }
 
 void processInput(GLFWwindow *window, Camera &camera) {
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+
+    if (Keyboard::GetKeyDown(window, GLFW_KEY_ESCAPE))
         glfwSetWindowShouldClose(window, true);
 
-    if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS) {
+    if (Keyboard::GetKeyDown(window, GLFW_KEY_V)) {
         cameraInput = !cameraInput;
         if (cameraInput)
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         else
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
+
 
     bool keys[] = {false, false, false, false}; // W A S D
     if (cameraInput) {
