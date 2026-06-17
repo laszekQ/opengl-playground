@@ -204,7 +204,7 @@ int main() {
         ImGui::Text("Rotation (%.2f, %.2f, %.2f)",  selectedObj->getRotation().x,
                                                         selectedObj->getRotation().y,
                                                         selectedObj->getRotation().z);
-        ImGui::Text("Scale (%.2f, %.2f, %.2f)",  selectedObj->getScale().x,
+        ImGui::Text("Scale (%.2f, %.2f, %.2f)",     selectedObj->getScale().x,
                                                         selectedObj->getScale().y,
                                                         selectedObj->getScale().z);
 
